@@ -4,142 +4,189 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>1versus1 | Random Football Team Matchup Generator</title>
+    <title>1versus1 | Random Football Matchup</title>
     <meta name="description"
-        content="Football X1 instantly draws two random football clubs for 1 vs 1 showdowns in FIFA 25, friendly matches or esports challenges. Free, fast and mobile-friendly." />
-    <meta name="keywords"
-        content="football randomizer, random football teams, FIFA 25 matchup, 1vs1, club draw, soccer team generator, football X1" />
-    <meta name="robots" content="index, follow" />
+        content="Draw two random football clubs for a 1 vs 1 showdown in FIFA 25, friendlies or esports challenges. Free, fast and mobile-friendly." />
     <link rel="canonical" href="https://alexandrebeato.github.io/1versus1/" />
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico">
 
     <style>
-        .teamLogo {
+        :root {
+            --primary: #ffa500;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0d1117 0%, #202731 100%);
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+        }
+
+        .glass-card {
+            width: min(100%, 960px);
+            padding: 2.5rem 2rem;
+            border-radius: 1.5rem;
+            margin: 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(14px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+
+        .brand-title {
+            font-weight: 600;
+            letter-spacing: .5px;
+        }
+
+        .team-logo {
+            width: 140px;
+            height: 140px;
+            object-fit: contain;
             margin-top: 20px;
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
+            border: 3px solid transparent;
+            transition: transform .35s;
+        }
+
+        .team-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity .4s ease;
+        }
+
+        .fade-enter-from,
+        .fade-leave-to {
+            opacity: 0;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border: none;
+            font-weight: 600;
+            padding: .75rem 2rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffb63b;
+        }
+
+        small {
+            opacity: .7;
         }
     </style>
-
-
-    <!-- Structured Data (JSON-LD) -->
-    <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "1versus1 X1",
-    "url": "https://alexandrebeato.github.io/1versus1/",
-    "description": "Random football team matchup generator for FIFA 25, friendlies and esports challenges.",
-    "inLanguage": "en"
-  }
-  </script>
 </head>
 
 <body data-bs-theme="dark">
-    <div id="app">
-        <div class="container mt-5">
-            <h1 class="text-center mb-4">1versus1</h1>
-            <p class="text-center">Randomly draw two football teams for a 1 vs 1 matchup.</p>
-            <button class="btn btn-primary d-block mx-auto" @click="drawTeams">Draw Teams</button>
-            <div v-if="playerOneTeam && playerTwoTeam" class="mt-4">
-                <div class="row">
-                    <div class="col text-center">
-                        <span class="badge text-bg-primary">Player 1</span>
-                        <br>
-                        <img :src="playerOneTeam.logo" alt="Team Logo" class="teamLogo mb-2">
-                        <h3>{{ playerOneTeam.name }}</h3>
+    <div id="app" style="display: none;" class="glass-card text-center">
+        <h1 class="brand-title mb-1">1versus1</h1>
+        <p class="mb-4">Random football club generator for instant 1 vs 1 matches.</p>
+
+        <button class="btn btn-primary" @click="drawTeams">Draw Teams</button>
+
+        <transition name="fade" mode="out-in">
+            <div v-if="playerOneTeam && playerTwoTeam" key="matchup" class="mt-5">
+                <div class="row justify-content-center align-items-center g-4">
+                    <div class="col-12 col-md-5">
+                        <span class="badge text-bg-primary mb-2">Player 1</span><br>
+                        <img :src="playerOneTeam.logo" class="team-logo mb-2" :alt="playerOneTeam.name">
+                        <h4 class="fw-semibold">{{ playerOneTeam.name }}</h4>
                     </div>
-                    <div class="col text-center">
-                        <h3>vs</h3>
+
+                    <div class="col-12 col-md-2 d-none d-md-block">
+                        <h3 class="fw-bold m-0">VS</h3>
                     </div>
-                    <div class="col text-center">
-                        <span class="badge text-bg-danger">Player 2</span>
-                        <br>
-                        <img :src="playerTwoTeam.logo" alt="Team Logo" class="teamLogo mb-2">
-                        <h3>{{ playerTwoTeam.name }}</h3>
+
+                    <div class="col-12 col-md-5">
+                        <span class="badge text-bg-danger mb-2">Player 2</span><br>
+                        <img :src="playerTwoTeam.logo" class="team-logo mb-2" :alt="playerTwoTeam.name">
+                        <h4 class="fw-semibold">{{ playerTwoTeam.name }}</h4>
                     </div>
                 </div>
             </div>
-            <br>
-            <br>
-            <br>
-            <p class="text-center"><small>
-                    Only teams with over 78 overall rating in FIFA 25 are included. This tool is perfect for creating
-                    quick matchups for friendly games, esports challenges, or just for fun!<br>
-                </small></p>
-        </div>
+        </transition>
 
-        <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+        <small class="d-block mt-5">
+            Only clubs rated 78+ overall in FIFA 25. Great for friendlies, esports challenges, or just for fun!
+        </small>
+    </div>
 
-        <script>
-            const app = Vue.createApp({
-                data() {
-                    return {
-                        teams: [
-                            { name: 'Manchester City', logo: 'https://img.sofascore.com/api/v1/team/17/image' },
-                            { name: 'Real Madrid', logo: 'https://img.sofascore.com/api/v1/team/2829/image' },
-                            { name: 'Liverpool', logo: 'https://img.sofascore.com/api/v1/team/44/image' },
-                            { name: 'FC Bayern München', logo: 'https://img.sofascore.com/api/v1/team/2672/image' },
-                            { name: 'Inter', logo: 'https://img.sofascore.com/api/v1/team/2697/image' },
-                            { name: 'FC Barcelona', logo: 'https://img.sofascore.com/api/v1/team/2817/image' },
-                            { name: 'Arsenal', logo: 'https://img.sofascore.com/api/v1/team/42/image' },
-                            { name: 'Bayer 04 Leverkusen', logo: 'https://img.sofascore.com/api/v1/team/2681/image' },
-                            { name: 'Paris Saint-Germain', logo: 'https://img.sofascore.com/api/v1/team/1644/image' },
-                            { name: 'Atlético Madrid', logo: 'https://img.sofascore.com/api/v1/team/2836/image' },
-                            { name: 'Aston Villa', logo: 'https://img.sofascore.com/api/v1/team/40/image' },
-                            { name: 'Newcastle United', logo: 'https://img.sofascore.com/api/v1/team/39/image' },
-                            { name: 'Tottenham Hotspur', logo: 'https://img.sofascore.com/api/v1/team/33/image' },
-                            { name: 'Borussia Dortmund', logo: 'https://img.sofascore.com/api/v1/team/2673/image' },
-                            { name: 'AC Milan', logo: 'https://img.sofascore.com/api/v1/team/2692/image' },
-                            { name: 'Chelsea', logo: 'https://img.sofascore.com/api/v1/team/38/image' },
-                            { name: 'Manchester United', logo: 'https://img.sofascore.com/api/v1/team/35/image' },
-                            { name: 'RB Leipzig', logo: 'https://img.sofascore.com/api/v1/team/36360/image' },
-                            { name: 'Juventus', logo: 'https://img.sofascore.com/api/v1/team/2687/image' },
-                            { name: 'Fenerbahçe SK', logo: 'https://img.sofascore.com/api/v1/team/3052/image' },
-                            { name: 'Athletic Club', logo: 'https://img.sofascore.com/api/v1/team/2825/image' },
-                            { name: 'Atalanta', logo: 'https://img.sofascore.com/api/v1/team/2686/image' },
-                            { name: 'Lazio', logo: 'https://img.sofascore.com/api/v1/team/2699/image' },
-                            { name: 'Napoli', logo: 'https://img.sofascore.com/api/v1/team/2714/image' },
-                            { name: 'Roma', logo: 'https://img.sofascore.com/api/v1/team/2702/image' },
-                            { name: 'Galatasaray SK', logo: 'https://img.sofascore.com/api/v1/team/3061/image' },
-                            { name: 'SL Benfica', logo: 'https://img.sofascore.com/api/v1/team/3006/image' },
-                            { name: 'Sporting CP', logo: 'https://img.sofascore.com/api/v1/team/3001/image' },
-                            { name: 'Crystal Palace', logo: 'https://img.sofascore.com/api/v1/team/7/image' },
-                            { name: 'Nottingham Forest', logo: 'https://img.sofascore.com/api/v1/team/14/image' },
-                            { name: 'West Ham United', logo: 'https://img.sofascore.com/api/v1/team/37/image' },
-                            { name: 'Real Betis', logo: 'https://img.sofascore.com/api/v1/team/2816/image' },
-                            { name: 'Brighton', logo: 'https://img.sofascore.com/api/v1/team/30/image' },
-                            { name: 'Real Sociedad', logo: 'https://img.sofascore.com/api/v1/team/2824/image' },
-                            { name: 'Olympique de Marseille', logo: 'https://img.sofascore.com/api/v1/team/1641/image' },
-                            { name: 'Villarreal CF', logo: 'https://img.sofascore.com/api/v1/team/2819/image' },
-                            { name: 'Girona FC', logo: 'https://img.sofascore.com/api/v1/team/24264/image' },
-                            { name: 'PSV', logo: 'https://img.sofascore.com/api/v1/team/2952/image' },
-                        ],
-                        playerOneTeam: null,
-                        playerTwoTeam: null
-                    };
-                },
-                methods: {
-                    drawTeams() {
-                        const shuffled = this.teams.sort(() => 0.5 - Math.random());
-                        this.playerOneTeam = shuffled[0];
-                        this.playerTwoTeam = shuffled[1];
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
-                        if (this.playerOneTeam.name === this.playerTwoTeam.name) {
-                            // If both teams are the same, redraw
-                            this.drawTeams();
-                        }
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    teams: [
+                        { name: 'Manchester City', logo: './teams/man-city.png' },
+                        { name: 'Real Madrid', logo: './teams/real-madrid.png' },
+                        { name: 'Liverpool', logo: './teams/liverpool.png' },
+                        { name: 'FC Bayern München', logo: './teams/bayern.png' },
+                        { name: 'Inter', logo: './teams/inter.png' },
+                        { name: 'FC Barcelona', logo: './teams/barcelona.png' },
+                        { name: 'Arsenal', logo: './teams/arsenal.png' },
+                        { name: 'Bayer 04 Leverkusen', logo: './teams/bayer.png' },
+                        { name: 'Paris Saint-Germain', logo: './teams/psg.png' },
+                        { name: 'Atlético Madrid', logo: './teams/atletico-madrid.png' },
+                        { name: 'Aston Villa', logo: './teams/aston-villa.png' },
+                        { name: 'Newcastle United', logo: './teams/newcastle.png' },
+                        { name: 'Tottenham Hotspur', logo: './teams/tottenham.png' },
+                        { name: 'Borussia Dortmund', logo: './teams/borussia.png' },
+                        { name: 'AC Milan', logo: './teams/milan.png' },
+                        { name: 'Chelsea', logo: './teams/chelsea.png' },
+                        { name: 'Manchester United', logo: './teams/man-united.png' },
+                        { name: 'RB Leipzig', logo: './teams/leipzig.png' },
+                        { name: 'Juventus', logo: './teams/juventus.png' },
+                        { name: 'Fenerbahçe SK', logo: './teams/fenerbahce.png' },
+                        { name: 'Athletic Club', logo: './teams/athletic-bilbao.png' },
+                        { name: 'Atalanta', logo: './teams/atalanta.png' },
+                        { name: 'Lazio', logo: './teams/lazio.png' },
+                        { name: 'Napoli', logo: './teams/napoli.png' },
+                        { name: 'Roma', logo: './teams/roma.png' },
+                        { name: 'Galatasaray SK', logo: './teams/galatasaray.png' },
+                        { name: 'SL Benfica', logo: './teams/benfica.png' },
+                        { name: 'Sporting CP', logo: './teams/sporting.png' },
+                        { name: 'Crystal Palace', logo: './teams/crystal-palace.png' },
+                        { name: 'Nottingham Forest', logo: './teams/n-forest.png' },
+                        { name: 'West Ham United', logo: './teams/west-ham.png' },
+                        { name: 'Real Betis', logo: './teams/real-betis.png' },
+                        { name: 'Brighton', logo: './teams/brighton.png' },
+                        { name: 'Real Sociedad', logo: './teams/real-sociedad.png' },
+                        { name: 'Olympique de Marseille', logo: './teams/olympic.png' },
+                        { name: 'Villarreal CF', logo: './teams/vilarreal.png' },
+                        { name: 'Girona FC', logo: './teams/girona.png' },
+                        { name: 'PSV', logo: './teams/psv.png' },
+                    ],
+                    playerOneTeam: null,
+                    playerTwoTeam: null
+                };
+            },
+            methods: {
+                drawTeams() {
+                    const shuffled = [...this.teams];
+                    for (let i = shuffled.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
                     }
+                    [this.playerOneTeam, this.playerTwoTeam] = shuffled.slice(0, 2);
                 }
-            });
-
-            app.mount('#app');
-        </script>
+            },
+            mounted() {
+                document.getElementById('app').style.display = '';
+            }
+        }).mount('#app');
+    </script>
 </body>
 
 </html>
