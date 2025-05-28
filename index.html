@@ -56,7 +56,20 @@
         }
 
         .team-logo:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
+        }
+
+        .small-team-logo {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+            margin-top: 10px;
+            border: 2px solid transparent;
+            transition: transform .15s;
+        }
+
+        .small-team-logo:hover {
+            transform: scale(1.5);
         }
 
         .fade-enter-active,
@@ -116,7 +129,12 @@
         </transition>
 
         <small class="d-block mt-5">
-            Only clubs rated 78+ overall in FIFA 25. Great for friendlies, esports challenges, or just for fun!
+            <span>{{ teams.length }} teams included:</span>
+            <ul class="list-inline mt-2 mb-0">
+                <li class="list-inline-item" v-for="team in teams" :key="team.name">
+                    <img :src="team.logo" :alt="team.name" class="small-team-logo" :title="team.name">
+                </li>
+            </ul>
         </small>
     </div>
 
